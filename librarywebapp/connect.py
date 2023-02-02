@@ -1,7 +1,7 @@
 # These details are available on the first MySQL Workbench screen
 # Usually called 'Local Instance'
 dbuser = "root" #PUT YOUR MySQL username here - usually root
-dbpass = "XXXXX" #PUT YOUR PASSWORD HERE
+dbpass = "1qaz2wsx" #PUT YOUR PASSWORD HERE
 dbhost = "localhost" 
 dbport = "3306"
 dbname = "library"

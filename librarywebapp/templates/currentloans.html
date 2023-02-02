@@ -2,6 +2,59 @@
 {% block content %}
 <!-- code in here to display a list of loans -->
 <!-- loanlist is the variable passed in containing list of loans -->
+<div class="container mt-3 text-center">
+    <h5>Current Loans List</h5>
+    <hr>
+</div>
+<div class="container">
+    <table>    
+        <table class="table table-hover table-light"> <!-- each row is hoverable, colour of the tabel is light grey-->
+            <thead class="table-primary">  <!-- the table head's colour is blue-->
+                <tr><th>Family Name </th> <th>First Name </th> <th>Bookcopy ID </th><th>Loan date </th><th>Current Status </th>
+                <th>Book Title </th><th>Author </th><th>Category </th><th>Format</th></tr>
+            </thead>
+            <tbody>
+            {% set borrowerid = namespace(id =0) %} <!-- assign value to variables to make the borrower name is shown only once according to borrowerid -->
+            {% for loans in  loanlist %} 
 
+            <!-- each row coloured depending on the type of book borrowed, paperback and hardback are white, eBook is green, Audio Book is yellow-->
+                {% if loans[12]=='eBook'%}
+                <tr class="table-success"> 
+                {% elif loans[12]=='Audio Book'%}
+                <tr class="table-warning">          
+                {% else %}
+                <tr>
+                {% endif %} 
+                
+                    <!-- make borrower's name only shown once if the borrower id is the same -->
+                    {% if borrowerid.id != loans[0]%}    
+                    <td>{{loans[2]}}</td><td>{{loans[1]}}</td>   <!-- the list sorted by borrower family name then first name -->
+                    {% set borrowerid.id = loans[0] %}
+                    {% else %}
+                    <td></td><td></td>
+                    {% endif %}
+
+                    <td>{{loans[4]}}</td>
+                    <td>{{loans[5]}}</td>
+
+                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is else number. -->
+                    {% if loans[6]==1%} 
+                    <td>Returned</td>  
+                    {% else %}
+                    <td>On Loan</td>
+                    {% endif %} 
+
+                    <td>{{loans[8]}}</td>
+                    <td>{{loans[9]}}</td>
+                    <td>{{loans[10]}}</td>
+                    <td>{{loans[12]}}</td>
+                </tr>
+
+                
+            {% endfor %}
+            </tbody> 
+        </table>
+    </table>
+</div>
 
 {% endblock %}

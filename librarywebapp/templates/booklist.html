@@ -1,18 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <!-- code in here to display a list of books-->
-<h2>Book List</h2>
-<h3>A list of all books in our collection</h3>
+<div class="container mt-3 text-center">
+    <h4>Book List</h4>
+    <h5>A list of all books in our collection</h5>
+    <hr>
+</div>
 
-<table>
-    <tr><th>Book ID</th><th>Title</th><th>Author</th><th>Type</th><th>Year of Publication</th><th>Description</th></tr>
-    {% for book in booklist %}
-        <tr>
-            {% for entry in book %}
-                <td>{{entry}}</td>
+<div class="container">
+    <table> 
+        <!--display the booklist in table formatting, and make each row is striped, hoverable, and bordered-->
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-primary"> <!-- the table head's colour is blue-->
+                <tr><th>Book ID</th><th>Title</th><th>Author</th><th>Type</th><th>Year of Publication</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+            {% for book in booklist %}
+                <tr>
+                    {% for entry in book %}
+                        <td>{{entry}}</td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
+            </tbody>
+    </table>
+</div>
 
 {% endblock %}
