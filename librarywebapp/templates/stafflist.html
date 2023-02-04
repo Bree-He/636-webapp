@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-3 text-center">
+    <h4>Book Copy List</h4>
+    <h5>A list of all book copies in our collection</h5>
+    <hr>
+</div>
+
+<div class="container">
+    <table> 
+        <!--display the booklist in table formatting, and make each row is striped, hoverable, and bordered-->
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-primary"> <!-- the table head's colour is blue-->
+                <tr><th>Bookcopy ID</th><th>Format</th><th>Book Title</th><th>Author</th><th>Loan Date</th><th>Current Status</th><th>Due Date</th></tr>
+            </thead>
+            <tbody>
+            {% for bookcopy in booklist %}
+                <tr>
+                    <td>{{bookcopy[0]}}</td>
+                    <td>{{bookcopy[1]}}</td>
+                    <td>{{bookcopy[2]}}</td>
+                    <td>{{bookcopy[3]}}</td>
+                    <td>{{bookcopy[4]}}</td>
+                    
+                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is '0'. -->
+                    {% if bookcopy[5]==1%} 
+                    <td>Returned</td> 
+                    {% elif bookcopy[5]==0%} 
+                    <td>On Loan</td>  
+                    {% else %}
+                    <td>Avaliable</td>
+                    {% endif %} 
+                    <td>{{bookcopy[6]}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+    </table>
+</div>
+
+{% endblock %}

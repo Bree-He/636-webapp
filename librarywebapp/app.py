@@ -45,7 +45,23 @@ def searchbooks():
     print(bookList)
     return render_template("searchlist.html", booklist = bookList)
 ########这段是新加的-->
+######这段是做staff的
+@app.route("/staff", methods=["GST", "POST"])
+def staff():
+    searchterm = request.form.get('search')
+    searchterm = "%" + searchterm +"%"
+    connection = getCursor()
+    connection.execute("SELECT bookcopies.bookcopyid, bookcopies.format, books.booktitle, books.author,loans.loandate,\
+                         loans.returned, adddate(loandate, interval 28 day) AS duedate\
+                             FROM bookcopies\
+                                 LEFT JOIN books ON bookcopies.bookid = books.bookid \
+                                 LEFT JOIN loans ON bookcopies.bookcopyid = loans.bookcopyid\
+                       WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
+    bookList = connection.fetchall()
+    print(bookList)
+    return render_template("stafflist.html", booklist = bookList)
 
+########
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
