@@ -44,7 +44,7 @@ def searchbooks():
     return render_template("searchlist.html", booklist = bookList)
 ########这段是新加的-->
 ######这段是做staff的
-@app.route("/staff", methods=["GST", "POST"])
+@app.route("/staff", methods=["POST"])
 def staff():
     searchterm = request.form.get('search')
     searchterm = "%" + searchterm +"%"
