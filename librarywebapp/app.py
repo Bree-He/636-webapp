@@ -44,10 +44,10 @@ def searchbooks():
     return render_template("searchlist.html", booklist = bookList)
 ########这段是新加的-->
 ######这段是做staff的
-@app.route("/staff", methods=["POST"])
+@app.route("/staff", methods=["GET", "POST"])
 def staff():
     searchterm = request.form.get('search')
-    searchterm = "%" + searchterm +"%"
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
     connection = getCursor()
     connection.execute("SELECT bookcopies.bookcopyid, bookcopies.format, books.booktitle, books.author,loans.loandate,\
                          loans.returned, adddate(loandate, interval 28 day) AS duedate\

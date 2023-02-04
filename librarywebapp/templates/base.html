@@ -28,6 +28,9 @@
             <li class="nav-item">
               <a class="nav-link active" href="{{ url_for('currentloans') }}">Current Loans</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('staff') }}">Staff</a>
+            </li>
           </ul>
         </nav>
       </div>
@@ -39,7 +42,7 @@
         {% endif %}
       </div>
       
-      <!-- 这段是新加的-->
+      <!-- add text and search button-->
       <br>
       <div class="container mt-3 text-center">
         <form action="/" method="POST">
@@ -47,7 +50,7 @@
             <input type = "submit" value="Search">    
         </form>
       </div>
-      <!-- 这段是新加的-->
+      <!-- -->
       
 
 
