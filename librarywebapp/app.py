@@ -27,9 +27,7 @@ def getCursor():
 def home():
     return render_template("base.html")
 
-########这段是新加的-->只能把books这个table display了，还没有做显示copies of book, on loan, due date
-####是否需要建个新的html？新的route？join两个表格，books和bookcopies，显示title，author，all copies, current status
-####due date需要计算28天，overdue 35天
+########这段是新加的-->
 @app.route("/", methods=["POST"])
 def searchbooks():
     searchterm = request.form.get('search')
@@ -61,7 +59,7 @@ def staff():
     print(bookList)
     return render_template("stafflist.html", booklist = bookList)
 
-########
+
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
