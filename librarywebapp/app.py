@@ -27,6 +27,25 @@ def getCursor():
 def home():
     return render_template("base.html")
 
+########这段是新加的-->只能把books这个table display了，还没有做显示copies of book, on loan, due date
+####是否需要建个新的html？新的route？join两个表格，books和bookcopies，显示title，author，all copies, current status
+####due date需要计算28天，overdue 35天
+@app.route("/", methods=["POST"])
+def searchbooks():
+    searchterm = request.form.get('search')
+    searchterm = "%" + searchterm +"%"
+    connection = getCursor()
+    connection.execute("SELECT bookcopies.bookcopyid, bookcopies.format, books.booktitle, books.author,loans.loandate,\
+                         loans.returned, adddate(loandate, interval 28 day) AS duedate\
+                             FROM bookcopies\
+                                 LEFT JOIN books ON bookcopies.bookid = books.bookid \
+                                 LEFT JOIN loans ON bookcopies.bookcopyid = loans.bookcopyid\
+                       WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
+    bookList = connection.fetchall()
+    print(bookList)
+    return render_template("searchlist.html", booklist = bookList)
+########这段是新加的-->
+
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
