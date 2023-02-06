@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- code in here to display a list of borrowers -->
+<!-- borrowerlist is the variable passed in containing list of loans -->
+<div class="container mt-3 text-center">
+    <h4>Borrower List</h4>
+    <hr>
+</div>
+<!-- add text and search button-->
+<div class="container mt-3 text-center">
+<form action="/searchborrower" method="POST">
+    <input type="text" name="search">
+    <input type = "submit" value="Search">    
+</form>
+</div>
+<br>
+<div class="container">
+    <table>  <!-- list all borrowers in a table. Display the borrowerlist in table formatting, and make each row is striped, hoverable, and bordered-->
+        <table class="table table-striped table-hover  table-bordered">
+            <thead class="table-primary">  <!-- the table head's colour is blue-->
+                <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
+                <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
+            </thead>
+            <tbody>
+            {% for borrower in borrowerlist %}
+            <tr>
+                <td>{{borrower[0]}}</td>
+                <td>{{borrower[1]}}</td>
+                <td>{{borrower[2]}}</td>
+                <td>{{borrower[3]}}</td>
+                <td>{{borrower[4]}}</td>
+                <td>{{borrower[5]}}</td>
+                <td>{{borrower[6]}}</td>
+                <td>{{borrower[7]}}</td>
+                <td>{{borrower[8]}}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </table>
+</div>
+{% endblock %}

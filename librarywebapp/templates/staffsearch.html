@@ -1,11 +1,20 @@
-{% extends "public.html" %}
-{% block content %}   
+{% extends "base.html" %}
+{% block content %}
     <div class="container mt-3 text-center">
         <h4>Book Copy List</h4>
         <h5>A list of all book copies in our collection</h5>
         <hr>
     </div>
-
+    <div class="container mt-3 text-center">
+        <form action="/staffsearch" method="POST">
+            <input type="text" name="search">
+            <input type = "submit" value="Search">    
+        </form>
+    </div>
+    <br>
+    <!-- -->
+    <!-- add text and search button-->
+    <br>
     <div class="container">
         <table> 
             <!--display the booklist in table formatting, and make each row is striped, hoverable, and bordered-->
@@ -36,5 +45,5 @@
                 </tbody>
         </table>
     </div>
-   
+
 {% endblock %}

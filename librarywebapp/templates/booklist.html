@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "public.html" %}
 {% block content %}
 <!-- code in here to display a list of books-->
 <div class="container mt-3 text-center">
     <h4>Book List</h4>
-    <h5>A list of all books in our collection</h5>
+    <h5>A list of all available books in our collection</h5>
     <hr>
 </div>
 
@@ -12,14 +12,22 @@
         <!--display the booklist in table formatting, and make each row is striped, hoverable, and bordered-->
         <table class="table table-striped table-hover table-bordered">
             <thead class="table-primary"> <!-- the table head's colour is blue-->
-                <tr><th>Book ID</th><th>Title</th><th>Author</th><th>Type</th><th>Year of Publication</th><th>Description</th></tr>
+                <tr><th>Book Copy ID</th><th>Title</th><th>Author</th><th>Year of Publication</th><th>Category</th><th>Current Status</th></tr>
             </thead>
             <tbody>
             {% for book in booklist %}
                 <tr>
-                    {% for entry in book %}
-                        <td>{{entry}}</td>
-                    {% endfor %}
+                    <td>{{book[0]}}</td>
+                    <td>{{book[1]}}</td>
+                    <td>{{book[2]}}</td>
+                    <td>{{book[3]}}</td>
+                    <td>{{book[4]}}</td>
+                    {% if book[5]==1%} 
+                    <td>Returned</td>  
+                    {% else %}
+                    <td>Avaliable</td>
+                    {% endif %} 
+                    
                 </tr>
             {% endfor %}
             </tbody>

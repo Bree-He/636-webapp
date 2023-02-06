@@ -24,11 +24,11 @@ def getCursor():
     return dbconn
 
 @app.route("/")
-def home():
-    return render_template("base.html")
+def public():
+    return render_template("public.html")
 
 ########这段是新加的-->
-@app.route("/", methods=["POST"])
+@app.route("/search", methods=["POST"])
 def searchbooks():
     searchterm = request.form.get('search')
     searchterm = "%" + searchterm +"%"
@@ -44,8 +44,12 @@ def searchbooks():
     return render_template("searchlist.html", booklist = bookList)
 ########这段是新加的-->
 ######这段是做staff的
-@app.route("/staff", methods=["GET", "POST"])
+@app.route("/staff")
 def staff():
+    return render_template("base.html")
+
+@app.route("/staffsearch", methods=["POST"])
+def staffsearch():
     searchterm = request.form.get('search')
     searchterm = "%" + searchterm +"%" if searchterm else "%"
     connection = getCursor()
@@ -57,13 +61,36 @@ def staff():
                        WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
     bookList = connection.fetchall()
     print(bookList)
-    return render_template("stafflist.html", booklist = bookList)
+    return render_template("staffsearch.html", booklist = bookList)
 
 
-@app.route("/listbooks")
+##############this route is display all availability of all copies of a book.
+
+@app.route("/staffbc")
+def staffbc():
+    searchterm = request.form.get('search')
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("SELECT bookcopies.bookcopyid, bookcopies.format, books.booktitle, books.author,loans.loandate,\
+                         loans.returned, adddate(loandate, interval 28 day) AS duedate\
+                             FROM bookcopies\
+                                 LEFT JOIN books ON bookcopies.bookid = books.bookid \
+                                 LEFT JOIN loans ON bookcopies.bookcopyid = loans.bookcopyid\
+                       WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
+    bookList = connection.fetchall()
+    print(bookList)
+    return render_template("staffbc.html", booklist = bookList)
+
+#####这段是按本来的booklist更改的，为了让public可以选择avaliable的所有书……这部分有点问题，在页面中无法展示。
+@app.route("/booklist")
 def listbooks():
     connection = getCursor()
-    connection.execute("SELECT * FROM books;")
+    connection.execute("SELECT DISTINCT bookcopies.bookcopyid, books.booktitle, books.author, \
+                        books.yearofpublication, books.category, loans.returned \
+                            from bookcopies \
+                                left join books on bookcopies.bookid = books.bookid \
+                                    left join loans on bookcopies.bookcopyid = loans.bookcopyid \
+                                        where returned = 1 or returned is null;")
     bookList = connection.fetchall()
     print(bookList)
     return render_template("booklist.html", booklist = bookList)    
@@ -96,6 +123,17 @@ def listborrowers():
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
     return render_template("borrowerlist.html", borrowerlist = borrowerList)
+
+#####following is creat a table for search borrowers by name or by id
+@app.route("/searchborrower", methods=["POST"])
+def searchborrowers():
+    searchterm = request.form.get('search')
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers WHERE borrowers.firstname LIKE %s OR borrowers.familyname LIKE %s OR borrowers.borrowerid LIKE %s;",(searchterm, searchterm, searchterm,))
+    borrowerList = connection.fetchall()
+    return render_template("borrower_search.html", borrowerlist = borrowerList)
+
 
 @app.route("/currentloans")
 def currentloans():
