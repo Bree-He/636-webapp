@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- code in here to display a list of borrowers -->
-<!-- borrowerlist is the variable passed in containing list of loans -->
+
 <div class="container mt-3 text-center">
-    <h4>Borrower List</h4>
+    <h4>Update Borrower</h4>
+    <h7>please input one borrower's ID</h7>
+
     <hr>
 </div>
+<!-- display success message if the borrower details were successfully updated -->
 <!-- add text and search button-->
 <div class="container mt-3 text-center">
-<form action="/searchborrower" method="POST">
-    <input type="text" name="search">
-    <input type = "submit" value="Search">    
-</form>
+    <form action="/borrowerupd1" method="GET", "POST">
+        <input type="text" name="borrowerid">
+        <input type = "submit" value="Update">    
+    </form>
 </div>
 <br>
 <div class="container">
@@ -19,7 +21,7 @@
         <table class="table table-striped table-hover  table-bordered">
             <thead class="table-primary">  <!-- the table head's colour is blue-->
                 <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
-                <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th><th>Update</th></tr>
+                <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
             </thead>
             <tbody>
             {% for borrower in borrowerlist %}
@@ -33,14 +35,9 @@
                 <td>{{borrower[6]}}</td>
                 <td>{{borrower[7]}}</td>
                 <td>{{borrower[8]}}</td>
-                <td><a href="{{url_for('updateborrower', borrowerid=borrower[0])}}" class="btn btn-primary" method="GET">Update</a></td>
             </tr>
         {% endfor %}
             </tbody>
         </table>
     </table>
-</div>
-<br>
-
-
 {% endblock %}

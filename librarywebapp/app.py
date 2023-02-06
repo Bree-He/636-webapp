@@ -124,7 +124,7 @@ def listborrowers():
     borrowerList = connection.fetchall()
     return render_template("borrowerlist.html", borrowerlist = borrowerList)
 
-#####following is creat a table for search borrowers by name or by id
+#####following is create a table for search borrowers by name or by id
 @app.route("/searchborrower", methods=["POST"])
 def searchborrowers():
     searchterm = request.form.get('search')
@@ -134,6 +134,113 @@ def searchborrowers():
     borrowerList = connection.fetchall()
     return render_template("borrower_search.html", borrowerlist = borrowerList)
 
+#########following function is for retrieve the borrower details from the database, update the details based on the user input, and save it back to database
+@app.route("/borrowerupdate", methods=["GET", "POST"])
+def updateborrower():
+    searchterm = request.form.get('borrowerid')
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers WHERE borrowers.borrowerid LIKE %s ;",(searchterm,))
+    borrower = connection.fetchall()
+    if borrower:
+        return render_template("borrower_update.html", borrower = borrower)
+    return render_template("borrower_update.html")
+
+@app.route("/borrowerup1", methods=["POST"])
+def update1borrower():
+    searchterm = request.form.get('search')
+    borrowerid = request.form.get('borrowerid') 
+    firstname = request.form.get('firstname')
+    familyname = request.form.get('familyname')
+    dateofbirth = request.form.get('dateofbirth')
+    housenumbername = request.form.get('housenumbername')
+    street = request.form.get('street')
+    town = request.form.get('town')
+    city = request.form.get('city')
+    postalcode = request.form.get('postalcode')
+  
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("update borrowers set firstname=%s, familyname=%s, dateofbirth=%s, housenumbername=%s, street=%s, town=%s, city=%s,postalcode=%s \
+        WHERE (`borrowerid`=%s);",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
+    borrowerList = connection.fetchall()
+    return render_template("borrower_update.html", borrowerlist = borrowerList)
+
+@app.route("/borrowerup2", methods=["POST"])
+def update1borrower2():
+    searchterm = request.form.get('search')
+    borrowerid = request.form.get('borrowerid') 
+    firstname = request.form.get('firstname')
+    familyname = request.form.get('familyname')
+    dateofbirth = request.form.get('dateofbirth')
+    housenumbername = request.form.get('housenumbername')
+    street = request.form.get('street')
+    town = request.form.get('town')
+    city = request.form.get('city')
+    postalcode = request.form.get('postalcode')
+  
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("update borrowers set firstname=%s, familyname=%s, dateofbirth=%s, housenumbername=%s, street=%s, town=%s, city=%s,postalcode=%s \
+        WHERE (`borrowerid`=%s);",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
+    borrowerList = connection.fetchall()
+    return render_template("borrower_update.html", borrowerlist = borrowerList)
+####################
+######following functions are for add borrowers
+@app.route("/borroweradd", methods=["GET", "POST"])
+def add_borrower():
+    if request.method == "GET":
+        return render_template("addborrower.html")
+    elif request.method == "POST":
+        borrowerid = request.form.get("borrowerid")
+        first_name = request.form.get("first_name")
+        family_name = request.form.get("family_name")
+        date_of_birth = request.form.get("date_of_birth")
+        house_number = request.form.get("house_number")
+        street = request.form.get("street")
+        town = request.form.get("town")
+        city = request.form.get("city")
+        postal_code = request.form.get("postal_code")
+
+        connection = getCursor()
+        connection.execute("INSERT INTO borrowers (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
+        connection.commit()
+
+        return redirect(url_for("borrower_list"))
+
+
+@app.route("/addborrower", methods=["POST"])
+def add_borrower_post():
+    borrowerid = request.form.get("borrowerid")
+    first_name = request.form.get("first_name")
+    family_name = request.form.get("family_name")
+    date_of_birth = request.form.get("date_of_birth")
+    house_number = request.form.get("house_number")
+    street = request.form.get("street")
+    town = request.form.get("town")
+    city = request.form.get("city")
+    postal_code = request.form.get("postal_code")
+
+    connection = getCursor()
+    connection.execute("INSERT INTO borrowers (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                       (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
+    connection.commit()
+
+    return redirect(url_for("borrower_list"))
+
+####################display a list of overdue books & their borrowers
+@app.route("/overdue")
+def overdue():
+    connection = getCursor()
+    sql=""" SELECT books.booktitle, borrowers.firstname, borrowers.familyname, datediff(curdate(), loandate) as overdue
+        FROM ((loans inner join borrowers on loans.borrowerid = borrowers.borrowerid)
+            inner join bookcopies on loans.bookcopyid = bookcopies.bookcopyid)
+                inner join books on bookcopies.bookid=books.bookid
+                    where datediff(curdate(), loandate) > 35; """
+    connection.execute(sql)
+    loanList = connection.fetchall()
+    return render_template("overdue.html", loanlist = loanList)
 
 @app.route("/currentloans")
 def currentloans():

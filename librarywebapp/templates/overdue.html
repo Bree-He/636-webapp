@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- code in here to display a list of loans -->
+<!-- loanlist is the variable passed in containing list of loans -->
+<div class="container mt-3 text-center">
+    <h5>Overdue Book List</h5>
+    <hr>
+</div>
+<div class="container">
+    <table>    
+        <!--display the booklist in table formatting, and make each row is striped, hoverable, and bordered-->
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-primary"> <!-- the table head's colour is blue-->
+                <tr><th>First Name </th> <th>Family Name </th> <th>Book Name </th><th>Overdue(total days)</tr>
+            </thead>
+            <tbody>
+            {% set borrowerid = namespace(id =0) %} <!-- assign value to variables to make the borrower name is shown only once according to borrowerid -->
+            {% for loans in  loanlist %} 
+                <tr>
+                    <!-- make borrower's name only shown once if the borrower id is the same -->
+                    {% if borrowerid.id != loans[0]%}    
+                    <td>{{loans[1]}}</td>
+                    <td>{{loans[2]}}</td>
+                    <td>{{loans[0]}}</td>
+                    <td>{{loans[3]}}</td>   <!-- the list sorted by borrower family name first name -->
+                    {% set borrowerid.id = loans[0] %}
+                    {% else %}
+                    <td></td>
+                    <td></td>
+                    <td>{{loans[0]}}</td>
+                    <td>{{loans[3]}}</td> 
+                    {% endif %}     
+                </tr>               
+            {% endfor %}
+            </tbody> 
+        </table>
+    </table>
+</div>
+
+{% endblock %}

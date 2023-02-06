@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-3 text-center">
+    <h4>Update Borrower</h4>
+    <hr>
+</div>
+<!-- display success message if the borrower details were successfully updated -->
+<!-- add text and search button-->
+<div class="container mt-3 text-center">
+    <form action="/borrowerupdate" method="GET", "POST">
+        <input type="text" name="borrowerid">
+        <input type = "submit" value="Update">    
+    </form>
+</div>
+
+
+<!-- code to display form for updating borrower details -->
+<div class="container">
+    <form action="/borrowerup1" method="POST">
+       
+        
+            <label for="borrowerid">Borrower ID</label>
+            <input type="text" id="borrowerid"  name="borrowerid" value="{{borrower.borrowerid}}">
+            <br>
+        
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name">
+            <br>
+        
+            <label for="family_name">Family Name</label>
+            <input type="text" id="family_name" name="family_name" >
+            <br>
+        
+            <label for="Date of Birth">Date of Birth</label>
+            <input type="text" id="date_of_birth" name="date_of_birth" >
+            <br>
+        
+            <label for="house_number">House Number</label>
+            <input type="text"  id="house_number" name="house_number">
+            <br>
+            <label for="street">Street</label>
+            <input type="text" id="street" name="street" >
+            <br>
+            <label for="town">Town</label>
+            <input type="text" id="town" name="town" >
+            <br>
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" >
+            <br>
+            <label for="postal_code">Postal Code</label>
+            <input type="text" name="postal_code" name="postal_code" >
+            <br>
+       
+        <input type="submit" value="Update" class="btn btn-primary">
+        
+    </form>
+</div>
+{% endblock %}
