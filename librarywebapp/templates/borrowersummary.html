@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-3 text-center">
+    <h5>Borrower Summary</h5>
+    <hr>
+</div>
+<div class="container">
+    <table>    
+
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-primary"> 
+                <tr>
+                    <th>Borrower ID </th>
+                    <th>Firstname </th>
+                    <th>Familyname </th>
+                    <th>Total Loan Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrower in borrowersummary %}
+                <tr>
+                  <td>{{ borrower[0] }}</td>
+                  <td>{{ borrower[1] }}</td>
+                  <td>{{ borrower[2] }}</td>
+                  <td>{{ borrower[3] }}</td>
+                </tr>
+              {% endfor %}
+            </tbody> 
+        </table>
+    </table>
+</div>
+{% endblock %}

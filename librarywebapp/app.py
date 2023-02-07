@@ -241,6 +241,33 @@ def overdue():
     connection.execute(sql)
     loanList = connection.fetchall()
     return render_template("overdue.html", loanlist = loanList)
+###################display a list of Loan Summary
+
+@app.route("/loansummary")
+def loansummary():
+    connection = getCursor()
+    sql = """SELECT  books.bookid, books.booktitle, books.author, books.category, books.yearofpublication,count(bookcopies.bookcopyid) as totalnumber
+                FROM bookcopies
+                left join loans on bookcopies.bookcopyid = loans.bookcopyid
+                left join books on bookcopies.bookid = books.bookid
+                group by books.bookid;"""
+    connection.execute(sql)
+    loanSummary = connection.fetchall()
+    return render_template("loansummary.html", loansummary = loanSummary)
+
+#########display a list of borrower summary
+@app.route("/borrowersummary")
+def borrowersummary():
+    connection = getCursor()
+    sql = """SELECT borrowers.borrowerid, borrowers.firstname, borrowers.familyname, count(loans.borrowerid) as totalnumber
+            FROM borrowers
+            LEFT JOIN loans ON borrowers.borrowerid = loans.borrowerid
+            GROUP BY borrowers.borrowerid;"""
+    connection.execute(sql)
+    borrowerSummary = connection.fetchall()
+    return render_template("borrowersummary.html", borrowersummary = borrowerSummary)
+
+
 
 @app.route("/currentloans")
 def currentloans():
