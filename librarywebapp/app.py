@@ -81,7 +81,7 @@ def staffbc():
     print(bookList)
     return render_template("staffbc.html", booklist = bookList)
 
-#####这段是按本来的booklist更改的，为了让public可以选择avaliable的所有书……这部分有点问题，在页面中无法展示。
+##########public interface list all avaliable book(bookcopies)
 @app.route("/booklist")
 def listbooks():
     connection = getCursor()
@@ -107,7 +107,6 @@ inner join books on books.bookid = bookcopies.bookid
     connection.execute(sql)
     bookList = connection.fetchall()
     return render_template("addloan.html", loandate = todaydate,borrowers = borrowerList, books= bookList)
-
 @app.route("/loan/add", methods=["POST"])
 def addloan():
     borrowerid = request.form.get('borrower')
@@ -116,6 +115,28 @@ def addloan():
     cur = getCursor()
     cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
     return redirect("/currentloans")
+#######return a book
+@app.route("/returnbook")
+def returnbook():
+    todaydate = datetime.now().date()
+    connection = getCursor()
+    sql = "SELECT * FROM loans WHERE returned = 1;"
+    connection.execute(sql)  
+    loanList = connection.fetchall()
+    return render_template("returnloan.html", returndate = todaydate, loans = loanList)
+@app.route("/loan/return", methods=["POST"])
+def returnloan():
+    loanid = request.form.get('loanid')
+    bookcopyid = request.form.get('bookcopyid')  
+    borrowerid= request.form.get('borrowerid')  
+    loandate = request.form.get('loandate')   
+    cur = getCursor()
+    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
+    return redirect("/currentloans")
+
+
+
+
 
 @app.route("/listborrowers")
 def listborrowers():
@@ -187,24 +208,23 @@ def update1borrower2():
     return render_template("borrower_update.html", borrowerlist = borrowerList)
 ####################
 ######following functions are for add borrowers
-@app.route("/borroweradd", methods=["GET", "POST"])
+@app.route("/borroweradd", methods=["POST"])
 def add_borrower():
     if request.method == "GET":
         return render_template("addborrower.html")
     elif request.method == "POST":
-        borrowerid = request.form.get("borrowerid")
-        first_name = request.form.get("first_name")
-        family_name = request.form.get("family_name")
-        date_of_birth = request.form.get("date_of_birth")
-        house_number = request.form.get("house_number")
+        first_name = request.form.get("firstname")
+        family_name = request.form.get("familyname")
+        date_of_birth = request.form.get("dateofbirth")
+        house_number = request.form.get("housenumbername")
         street = request.form.get("street")
         town = request.form.get("town")
         city = request.form.get("city")
-        postal_code = request.form.get("postal_code")
+        postal_code = request.form.get("postalcode")
 
         connection = getCursor()
-        connection.execute("INSERT INTO borrowers (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                           (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
+        connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                        ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
         connection.commit()
 
         return redirect(url_for("borrower_list"))
@@ -212,19 +232,19 @@ def add_borrower():
 
 @app.route("/addborrower", methods=["POST"])
 def add_borrower_post():
-    borrowerid = request.form.get("borrowerid")
-    first_name = request.form.get("first_name")
-    family_name = request.form.get("family_name")
-    date_of_birth = request.form.get("date_of_birth")
-    house_number = request.form.get("house_number")
+
+    first_name = request.form.get("firstname")
+    family_name = request.form.get("familyname")
+    date_of_birth = request.form.get("dateofbirth")
+    house_number = request.form.get("housenumbername")
     street = request.form.get("street")
     town = request.form.get("town")
     city = request.form.get("city")
-    postal_code = request.form.get("postal_code")
+    postal_code = request.form.get("postalcode")
 
     connection = getCursor()
-    connection.execute("INSERT INTO borrowers (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                       (borrowerid, first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
+    connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                       ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
     connection.commit()
 
     return redirect(url_for("borrower_list"))
@@ -266,8 +286,6 @@ def borrowersummary():
     connection.execute(sql)
     borrowerSummary = connection.fetchall()
     return render_template("borrowersummary.html", borrowersummary = borrowerSummary)
-
-
 
 @app.route("/currentloans")
 def currentloans():

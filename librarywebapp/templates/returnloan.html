@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- borrowers is the variable passed in listing borrowers -->
+<!-- books is the variable passed in listing available books -->
+<!-- loandate is the variable passed in containing the current date -->
+<!-- name for the borrower dropdown borrower should be  borrower -->
+<!-- name for the book dropdown should be book-->
+<!-- name for the hidden field with date should be loandate -->
+<!-- URL for submission (action) of form should be loan/add -->
+<section>
+    <div class="container mt-3 text-center">
+        <h5>Please select the borrower and book </h5>
+        <br>
+    </div>
+    
+    <form action="/loan/return" method="post"> <!-- the form submitted using POST to the /loan/return route -->
+        <div class="container mt-3 text-center">
+            <label>Book:</label>
+                <select name="loan" id="loan" required>   <!-- a drop down box of available book copies, shown with bookcopyid, book title. This field is required field -->
+                    <option value="">-------LoanID / BookcopyID / BorrowerID / Loandate------</option>
+                    {% for loan in loans %}
+                    <option value="{{loan[0]}}">{{loan[0]}} / {{loan[1]}} / {{loan[2]}} / {{loan[3]}}</option>
+                    {% endfor %}
+                </select>
+                  
+        </div>
+
+        <br>
+        <div class="container mt-3 text-center">
+            <input type = "submit" value = "Sumbit" /> 
+            <input type = "reset" value = "cancel" />
+        </div>
+        
+    
+    </form>
+</section>
+
+{% endblock %}
