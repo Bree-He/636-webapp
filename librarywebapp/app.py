@@ -27,7 +27,7 @@ def getCursor():
 def public():
     return render_template("public.html")
 
-########这段是新加的-->
+########search for public-->
 @app.route("/search", methods=["POST"])
 def searchbooks():
     searchterm = request.form.get('search')
@@ -42,8 +42,8 @@ def searchbooks():
     bookList = connection.fetchall()
     print(bookList)
     return render_template("searchlist.html", booklist = bookList)
-########这段是新加的-->
-######这段是做staff的
+
+######staff interface
 @app.route("/staff")
 def staff():
     return render_template("base.html")
@@ -64,7 +64,7 @@ def staffsearch():
     return render_template("staffsearch.html", booklist = bookList)
 
 
-##############this route is display all availability of all copies of a book.
+##############this route is display all availability of all copies of a book (staff).
 
 @app.route("/staffbc")
 def staffbc():
@@ -94,7 +94,7 @@ def listbooks():
     bookList = connection.fetchall()
     print(bookList)
     return render_template("booklist.html", booklist = bookList)    
-
+#########issue book
 @app.route("/loanbook")
 def loanbook():
     todaydate = datetime.now().date()
