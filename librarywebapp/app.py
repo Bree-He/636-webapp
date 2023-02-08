@@ -115,6 +115,7 @@ def addloan():
     cur = getCursor()
     cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
     return redirect("/currentloans")
+
 #######return a book
 @app.route("/returnbook")
 def returnbook():
@@ -133,7 +134,8 @@ def returnloan():
     cur = getCursor()
     cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
     return redirect("/currentloans")
-#############update borrowers
+
+#############  update borrowers##########
 @app.route("/listborrowers")
 def listborrowers():
     connection = getCursor()
@@ -141,29 +143,31 @@ def listborrowers():
     borrowerList = connection.fetchall()
     return render_template("borrowerlist.html", borrowerlist = borrowerList)
 
-@app.route("/up1", methods=["GET","POST"])
+@app.route("/1up", methods=["GET","POST"])
 def up1():
     borrowerid = request.form.get("borrowerid")
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
     return render_template("1up.html", borrowers= borrowerList)
-@app.route("/2up", methods=["POST"])
-def up2():
-    borrowerid = request.form.get('borrowerid')
-    firstname = request.form.get('firstname')
-    familyname = request.form.get('familyname')
-    dateofbirth = request.form.get('dateofbirth')
-    housenumbername = request.form.get('housenumbername')
-    street = request.form.get('street')
-    town = request.form.get('town')
-    city = request.form.get('city')
-    postalcode = request.form.get('postalcode')
-    connection = getCursor()
-    connection.execute("UPDATE borrowers SET firstname = %s, familyname= %s, dateofbirth = %s, housenumbername = %s, street = %s, town = %s, city = %s, postalcode= %s  \
-        WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
-    
-    return redirect("/borrowerlist")
+@app.route("/2up", methods=["GET", "POST"])
+def up2():  
+    if request.method == "POST":
+        borrowerid = request.form.get('borrowerid')
+        firstname = request.form.get('firstname')
+        familyname = request.form.get('familyname')
+        dateofbirth = request.form.get('dateofbirth')
+        housenumbername = request.form.get('housenumbername')
+        street = request.form.get('street')
+        town = request.form.get('town')
+        city = request.form.get('city')
+        postalcode = request.form.get('postalcode')
+        connection = getCursor()
+        connection.execute("UPDATE borrowers SET firstname = %s, familyname= %s, dateofbirth = %s, housenumbername = %s, street = %s, town = %s, city = %s, postalcode= %s  \
+            WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))        
+        return render_template("2up.html")
+    else:
+        return render_template("borrowerlist.html")
 
 
 
@@ -186,10 +190,10 @@ def add_borrower():
     if request.method == "GET":
         return render_template("addborrower.html")
     else:
-        first_name = request.form.get("firstname")
-        family_name = request.form.get("familyname")
-        date_of_birth = request.form.get("dateofbirth")
-        house_number = request.form.get("housenumbername")
+        first_name = request.form.get("first_name")
+        family_name = request.form.get("family_name")
+        date_of_birth = request.form.get("date_of_birth")
+        house_number = request.form.get("house_number")
         street = request.form.get("street")
         town = request.form.get("town")
         city = request.form.get("city")
@@ -198,28 +202,10 @@ def add_borrower():
         connection = getCursor()
         connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                         ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
-        connection.commit()
+        
 
-        return redirect(url_for("borrower_list"))
+        return redirect(url_for("listborrowers"))
 
-@app.route("/addborrower", methods=["POST"])
-def add_borrower_post():
-
-    first_name = request.form.get("firstname")
-    family_name = request.form.get("familyname")
-    date_of_birth = request.form.get("dateofbirth")
-    house_number = request.form.get("housenumbername")
-    street = request.form.get("street")
-    town = request.form.get("town")
-    city = request.form.get("city")
-    postal_code = request.form.get("postalcode")
-
-    connection = getCursor()
-    connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                       ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
-    connection.commit()
-
-    return redirect(url_for("borrower_list"))
 
 ####################display a list of overdue books & their borrowers
 @app.route("/overdue")
@@ -238,10 +224,10 @@ def overdue():
 @app.route("/loansummary")
 def loansummary():
     connection = getCursor()
-    sql = """SELECT  books.bookid, books.booktitle, books.author, books.category, books.yearofpublication,count(bookcopies.bookcopyid) as totalnumber
-                FROM bookcopies
-                left join loans on bookcopies.bookcopyid = loans.bookcopyid
-                left join books on bookcopies.bookid = books.bookid
+    sql = """SELECT  books.bookid, books.booktitle, books.author, books.category, books.yearofpublication,count(loans.loanid) as totalnumber
+                FROM loans
+                inner join bookcopies on loans.bookcopyid = bookcopies.bookcopyid
+                inner join books on bookcopies.bookid = books.bookid
                 group by books.bookid;"""
     connection.execute(sql)
     loanSummary = connection.fetchall()
@@ -251,9 +237,9 @@ def loansummary():
 @app.route("/borrowersummary")
 def borrowersummary():
     connection = getCursor()
-    sql = """SELECT borrowers.borrowerid, borrowers.firstname, borrowers.familyname, count(loans.borrowerid) as totalnumber
-            FROM borrowers
-            LEFT JOIN loans ON borrowers.borrowerid = loans.borrowerid
+    sql = """SELECT borrowers.borrowerid, borrowers.firstname, borrowers.familyname, count(loans.loanid) as totalnumber
+            FROM loans
+            INNER JOIN borrowers ON loans.borrowerid = borrowers.borrowerid
             GROUP BY borrowers.borrowerid;"""
     connection.execute(sql)
     borrowerSummary = connection.fetchall()
