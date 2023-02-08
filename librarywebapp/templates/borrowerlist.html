@@ -23,11 +23,18 @@
         </thead>
         <tbody>
         {% for borrower in  borrowerlist %}
-            <tr>
-                {% for entry in borrower %}
-                    <td>{{entry}}</td>
-                {% endfor %}
-            </tr>
+        <tr>
+            <td>{{ borrower[0] }}</td>
+            <td>{{ borrower[1] }}</td>
+            <td>{{ borrower[2] }}</td>
+            <td>{{ borrower[3] }}</td>
+            <td>{{ borrower[4] }}</td>
+            <td>{{ borrower[5] }}</td>
+            <td>{{ borrower[6] }}</td>
+            <td>{{ borrower[7] }}</td>
+            <td>{{ borrower[8] }}</td>
+            <td>{{ borrower[9] }}</td>
+        </tr>
         {% endfor %}
         </tbody>
     </table>

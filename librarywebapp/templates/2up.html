@@ -9,23 +9,19 @@
 <!-- URL for submission (action) of form should be loan/add -->
 <section>
     <div class="container mt-3 text-center">
-        <h5>Please select the borrower and update information </h5>
+        <h5>Please update borrower's information </h5>
         <br>
     </div>
-    <form action="/listborrowers/update" method="post"> <!-- the form submitted using POST to the /loan/add route -->
-        <div class="container mt-3 text-center">
-            <label>Borrower: </label>
-                <select name="borrower" id="borrower" required>   <!-- a drop down box of Borrowers,shown with borrower's id, firstname, and familyname. This field is required field -->
-                    <option value="">--Borrower's ID and name--</option>
-                    {% for borrower in borrowers %}
-                    <option value="{{ borrower[0] }}">{{ borrower[0] }} {{borrower[1]}} {{borrower[2]}} </option> 
-                    {% endfor %}
-                </select>
-        </div>
+    <form action="/3up" method="POST"> <!-- the form submitted using POST to the /loan/add route -->
+
         <div class="container mt-3 text-left">
             <label>Borrower's information:</label>
             <br>
-            {% for borrower in borrowers %}       
+            {% for borrower in borrowers %}  
+            <label for="borrowerid">Borrower ID</label>
+            <input type="text" id="borrowerid" name="borrowerid" value="{{ borrower[0] }}">
+            <br>
+
             <label for="firstname">First Name</label>
             <input type="text" id="firstname" name="firstname" value="{{ borrower[1] }}">
             <br>
@@ -56,6 +52,9 @@
             {% endfor %}      
         </div>
         <br>
+ 
+
+
         <div class="container mt-3 text-center">
             <input type = "submit" value = "Sumbit" /> 
             <input type = "reset" value = "cancel" />

@@ -143,16 +143,24 @@ def listborrowers():
     borrowerList = connection.fetchall()
     return render_template("borrowerlist.html", borrowerlist = borrowerList)
 
-@app.route("/1up", methods=["GET","POST"])
+@app.route("/1up")
 def up1():
-    borrowerid = request.form.get("borrowerid")
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
     return render_template("1up.html", borrowers= borrowerList)
-@app.route("/2up", methods=["GET", "POST"])
-def up2():  
-    if request.method == "POST":
+
+@app.route("/2up", methods=["POST"])
+def up2():     
+    borrowerid = request.form.get('borrower')
+
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers where borrowers.borrowerid = %s",(borrowerid,))
+    borrowerList = connection.fetchall()   
+    return render_template("2up.html", borrowers= borrowerList)
+    
+@app.route("/3up", methods=["POST"])
+def up3():   
         borrowerid = request.form.get('borrowerid')
         firstname = request.form.get('firstname')
         familyname = request.form.get('familyname')
@@ -164,10 +172,10 @@ def up2():
         postalcode = request.form.get('postalcode')
         connection = getCursor()
         connection.execute("UPDATE borrowers SET firstname = %s, familyname= %s, dateofbirth = %s, housenumbername = %s, street = %s, town = %s, city = %s, postalcode= %s  \
-            WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))        
-        return render_template("2up.html")
-    else:
-        return render_template("borrowerlist.html")
+            WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))  
+        connection.execute("SELECT * FROM borrowers where borrowers.borrowerid = %s",(borrowerid,))
+        borrowerList = connection.fetchall()      
+        return render_template("borrowerlist.html",borrowerlist= borrowerList)
 
 
 
