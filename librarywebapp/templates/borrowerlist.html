@@ -15,23 +15,23 @@
 </div>
 <br>
 <div class="container">
-    <table>  <!-- list all borrowers in a table. Display the borrowerlist in table formatting, and make each row is striped, hoverable, and bordered-->
-        <table class="table table-striped table-hover  table-bordered">
-            <thead class="table-primary">  <!-- the table head's colour is blue-->
-                <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
-                <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
-            </thead>
-            <tbody>
-            {% for borrower in  borrowerlist %}
-                <tr>
-                    {% for entry in borrower %}
-                        <td>{{entry}}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+ <!-- list all borrowers in a table. Display the borrowerlist in table formatting, and make each row is striped, hoverable, and bordered-->
+    <table class="table table-striped table-hover  table-bordered">
+        <thead class="table-primary">  <!-- the table head's colour is blue-->
+            <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
+            <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
+        </thead>
+        <tbody>
+        {% for borrower in  borrowerlist %}
+            <tr>
+                {% for entry in borrower %}
+                    <td>{{entry}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
+
 </div>
       
 

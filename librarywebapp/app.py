@@ -133,17 +133,40 @@ def returnloan():
     cur = getCursor()
     cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
     return redirect("/currentloans")
-
-
-
-
-
+#############update borrowers
 @app.route("/listborrowers")
 def listborrowers():
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
     return render_template("borrowerlist.html", borrowerlist = borrowerList)
+
+@app.route("/up1", methods=["GET","POST"])
+def up1():
+    borrowerid = request.form.get("borrowerid")
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers;")
+    borrowerList = connection.fetchall()
+    return render_template("1up.html", borrowers= borrowerList)
+@app.route("/2up", methods=["POST"])
+def up2():
+    borrowerid = request.form.get('borrowerid')
+    firstname = request.form.get('firstname')
+    familyname = request.form.get('familyname')
+    dateofbirth = request.form.get('dateofbirth')
+    housenumbername = request.form.get('housenumbername')
+    street = request.form.get('street')
+    town = request.form.get('town')
+    city = request.form.get('city')
+    postalcode = request.form.get('postalcode')
+    connection = getCursor()
+    connection.execute("UPDATE borrowers SET firstname = %s, familyname= %s, dateofbirth = %s, housenumbername = %s, street = %s, town = %s, city = %s, postalcode= %s  \
+        WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
+    
+    return redirect("/borrowerlist")
+
+
+
 
 #####following is create a table for search borrowers by name or by id
 @app.route("/searchborrower", methods=["POST"])
@@ -155,64 +178,14 @@ def searchborrowers():
     borrowerList = connection.fetchall()
     return render_template("borrower_search.html", borrowerlist = borrowerList)
 
-#########following function is for retrieve the borrower details from the database, update the details based on the user input, and save it back to database
-@app.route("/borrowerupdate", methods=["GET", "POST"])
-def updateborrower():
-    searchterm = request.form.get('borrowerid')
-    searchterm = "%" + searchterm +"%" if searchterm else "%"
-    connection = getCursor()
-    connection.execute("SELECT * FROM borrowers WHERE borrowers.borrowerid LIKE %s ;",(searchterm,))
-    borrower = connection.fetchall()
-    if borrower:
-        return render_template("borrower_update.html", borrower = borrower)
-    return render_template("borrower_update.html")
 
-@app.route("/borrowerup1", methods=["POST"])
-def update1borrower():
-    searchterm = request.form.get('search')
-    borrowerid = request.form.get('borrowerid') 
-    firstname = request.form.get('firstname')
-    familyname = request.form.get('familyname')
-    dateofbirth = request.form.get('dateofbirth')
-    housenumbername = request.form.get('housenumbername')
-    street = request.form.get('street')
-    town = request.form.get('town')
-    city = request.form.get('city')
-    postalcode = request.form.get('postalcode')
-  
-    searchterm = "%" + searchterm +"%" if searchterm else "%"
-    connection = getCursor()
-    connection.execute("update borrowers set firstname=%s, familyname=%s, dateofbirth=%s, housenumbername=%s, street=%s, town=%s, city=%s,postalcode=%s \
-        WHERE (`borrowerid`=%s);",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
-    borrowerList = connection.fetchall()
-    return render_template("borrower_update.html", borrowerlist = borrowerList)
-
-@app.route("/borrowerup2", methods=["POST"])
-def update1borrower2():
-    searchterm = request.form.get('search')
-    borrowerid = request.form.get('borrowerid') 
-    firstname = request.form.get('firstname')
-    familyname = request.form.get('familyname')
-    dateofbirth = request.form.get('dateofbirth')
-    housenumbername = request.form.get('housenumbername')
-    street = request.form.get('street')
-    town = request.form.get('town')
-    city = request.form.get('city')
-    postalcode = request.form.get('postalcode')
-  
-    searchterm = "%" + searchterm +"%" if searchterm else "%"
-    connection = getCursor()
-    connection.execute("update borrowers set firstname=%s, familyname=%s, dateofbirth=%s, housenumbername=%s, street=%s, town=%s, city=%s,postalcode=%s \
-        WHERE (`borrowerid`=%s);",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))
-    borrowerList = connection.fetchall()
-    return render_template("borrower_update.html", borrowerlist = borrowerList)
 ####################
 ######following functions are for add borrowers
-@app.route("/borroweradd", methods=["POST"])
+@app.route("/borroweradd", methods=["GET", "POST"])
 def add_borrower():
     if request.method == "GET":
         return render_template("addborrower.html")
-    elif request.method == "POST":
+    else:
         first_name = request.form.get("firstname")
         family_name = request.form.get("familyname")
         date_of_birth = request.form.get("dateofbirth")
@@ -228,7 +201,6 @@ def add_borrower():
         connection.commit()
 
         return redirect(url_for("borrower_list"))
-
 
 @app.route("/addborrower", methods=["POST"])
 def add_borrower_post():
@@ -257,7 +229,7 @@ def overdue():
         FROM ((loans inner join borrowers on loans.borrowerid = borrowers.borrowerid)
             inner join bookcopies on loans.bookcopyid = bookcopies.bookcopyid)
                 inner join books on bookcopies.bookid=books.bookid
-                    where datediff(curdate(), loandate) > 35; """
+                    where loans.returned = 0 and datediff(curdate(), loandate) > 35; """
     connection.execute(sql)
     loanList = connection.fetchall()
     return render_template("overdue.html", loanlist = loanList)

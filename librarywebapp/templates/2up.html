@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- borrowers is the variable passed in listing borrowers -->
+<!-- books is the variable passed in listing available books -->
+<!-- loandate is the variable passed in containing the current date -->
+<!-- name for the borrower dropdown borrower should be  borrower -->
+<!-- name for the book dropdown should be book-->
+<!-- name for the hidden field with date should be loandate -->
+<!-- URL for submission (action) of form should be loan/add -->
+<section>
+    <div class="container mt-3 text-center">
+        <h5>Please select the borrower and update information </h5>
+        <br>
+    </div>
+    <form action="/listborrowers/update" method="post"> <!-- the form submitted using POST to the /loan/add route -->
+        <div class="container mt-3 text-center">
+            <label>Borrower: </label>
+                <select name="borrower" id="borrower" required>   <!-- a drop down box of Borrowers,shown with borrower's id, firstname, and familyname. This field is required field -->
+                    <option value="">--Borrower's ID and name--</option>
+                    {% for borrower in borrowers %}
+                    <option value="{{ borrower[0] }}">{{ borrower[0] }} {{borrower[1]}} {{borrower[2]}} </option> 
+                    {% endfor %}
+                </select>
+        </div>
+        <div class="container mt-3 text-left">
+            <label>Borrower's information:</label>
+            <br>
+            {% for borrower in borrowers %}       
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" name="firstname" value="{{ borrower[1] }}">
+            <br>
+        
+            <label for="familyname">Family Name</label>
+            <input type="text" id="familyname" name="familyname" value="{{ borrower[2] }}" >
+            <br>
+        
+            <label for="dateofbirth">Date of Birth</label>
+            <input type="text" id="dateofbirth" name="dateofbirth" value="{{ borrower[3] }}">
+            <br>
+        
+            <label for="housenumbername">House Number</label>
+            <input type="text"  id="housenumbername" name="housenumbername" value="{{ borrower[4] }}">
+            <br>
+            <label for="street">Street</label>
+            <input type="text" id="street" name="street"  value="{{ borrower[5] }}">
+            <br>
+            <label for="town">Town</label>
+            <input type="text" id="town" name="town"  value="{{ borrower[6] }}">
+            <br>
+            <label for="city">City</label>
+            <input type="text" id="city" name="city"  value="{{ borrower[7] }}">
+            <br>
+            <label for="postalcode">Postal Code</label>
+            <input type="text" name="postalcode" name="postalcode"  value="{{ borrower[8] }}">
+            <br>
+            {% endfor %}      
+        </div>
+        <br>
+        <div class="container mt-3 text-center">
+            <input type = "submit" value = "Sumbit" /> 
+            <input type = "reset" value = "cancel" />
+        </div>
+        
+    
+    </form>
+</section>
+
+{% endblock %}
