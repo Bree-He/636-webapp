@@ -36,11 +36,11 @@
                     <td>{{loans[4]}}</td>
                     <td>{{loans[5]}}</td>
 
-                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'available' when current states is else number. -->
+                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is else number. -->
                     {% if loans[6]==1%} 
                     <td>Returned</td>  
                     {% else %}
-                    <td>Avaliable</td>
+                    <td>On Loan</td>
                     {% endif %} 
 
                     <td>{{loans[8]}}</td>

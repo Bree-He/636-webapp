@@ -42,6 +42,7 @@ def searchbooks():
     bookList = connection.fetchall()
     print(bookList)
     return render_template("searchlist.html", booklist = bookList)
+
 ##########public interface list all avaliable book
 @app.route("/booklist")
 def listbooks():
@@ -55,6 +56,7 @@ def listbooks():
 @app.route("/staff")
 def staff():
     return render_template("staff.html")
+
 ######staff search
 @app.route("/staff/search", methods=["POST"])
 def staffsearch():
@@ -94,6 +96,7 @@ def listborrowers():
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
     return render_template("staff_borrowers.html", borrowerlist = borrowerList)
+
 #####following is create a table for search borrowers by name or by id
 @app.route("/staff/search_borrower", methods=["POST"])
 def searchborrowers():
@@ -103,7 +106,8 @@ def searchborrowers():
     connection.execute("SELECT * FROM borrowers WHERE borrowers.firstname LIKE %s OR borrowers.familyname LIKE %s OR borrowers.borrowerid LIKE %s;",(searchterm, searchterm, searchterm,))
     borrowerList = connection.fetchall()
     return render_template("staff/search_borrower.html", borrowerlist = borrowerList)
-#############  update borrowers##########
+
+#############  update borrowers ##########
 @app.route("/update_borrower")
 def up1():
     connection = getCursor()
@@ -114,7 +118,6 @@ def up1():
 @app.route("/staff/update_borrower", methods=["POST"])
 def up2():     
     borrowerid = request.form.get('borrower')
-
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers where borrowers.borrowerid = %s",(borrowerid,))
     borrowerList = connection.fetchall()   
@@ -167,7 +170,8 @@ def loanbook():
     borrowerList = connection.fetchall()
     sql = """SELECT * FROM bookcopies
 inner join books on books.bookid = bookcopies.bookid
- WHERE bookcopyid not in (SELECT bookcopyid from loans where returned <> 1 or returned is NULL);"""
+where bookcopyid not in(select distinct loans.bookcopyid from loans inner join bookcopies on bookcopies.bookcopyid = loans.bookcopyid
+where (bookcopies.format not in('eBook', 'Audio Book')and loans.returned<>1 or loans.returned is null));"""
     connection.execute(sql)
     bookList = connection.fetchall()
     return render_template("issue_book.html", loandate = todaydate,borrowers = borrowerList, books= bookList)
@@ -198,20 +202,19 @@ def currentloans():
 #######return a book
 @app.route("/returnbook")
 def returnbook():
-    todaydate = datetime.now().date()
+
     connection = getCursor()
     sql = "SELECT * FROM loans WHERE returned = 0;"
     connection.execute(sql)  
     loanList = connection.fetchall()
-    return render_template("returnloan.html", returndate = todaydate, loans = loanList)
+    return render_template("returnloan.html", loans = loanList)
 @app.route("/loan/return", methods=["POST"])
 def returnloan():
-    loanid = request.form.get('loanid')
-    bookcopyid = request.form.get('bookcopyid')  
-    borrowerid= request.form.get('borrowerid')  
-    loandate = request.form.get('loandate')   
+    loanid = request.form.get('loan')  
     cur = getCursor()
     cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
+
+        
     return redirect("/currentreturn")
 @app.route("/currentreturn")
 def currentreturn():
