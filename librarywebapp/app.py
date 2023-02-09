@@ -202,7 +202,6 @@ def currentloans():
 #######return a book
 @app.route("/returnbook")
 def returnbook():
-
     connection = getCursor()
     sql = "SELECT * FROM loans WHERE returned = 0;"
     connection.execute(sql)  
@@ -212,9 +211,7 @@ def returnbook():
 def returnloan():
     loanid = request.form.get('loan')  
     cur = getCursor()
-    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
-
-        
+    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))       
     return redirect("/currentreturn")
 @app.route("/currentreturn")
 def currentreturn():
