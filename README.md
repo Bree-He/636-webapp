@@ -1,19 +1,19 @@
-# 636-webapp
+
 COMP636-S1-2023-Web App
 
-Web Application Project Report
+##Web Application Project Report
 
 
-Introduction
+###Introduction
 
 This report provides an overview of the solution for the web-based library management system for Waikirikiri Library. This system has both a public interface and a staff interface with a MySQL database using the python connector library to perform various operations to manage books, borrowers and loans.
 
-Solution Structure
+###Solution Structure
 
 The solution consists of several routes and functions that work together to provide a friendly user experience.
 There are two main templates, “/” and”/staff”.
 
-Public interface:
+####Public interface:
 
 /: the home page of the public interface will display when the default route is accessed “/”, also, it’s the base for”/search” and “/booklist”.
 
@@ -21,7 +21,7 @@ Public interface:
 
 /booklist: this route is list all the books in the database and displays the result in the “booklist.html” template.
 
-Staff interface:
+####Staff interface:
 
 /staff: the home page of the staff interface, can be accessed without logging in. There is no link to the staff interface from the public interface. Also, the “staff.html” is the base for all other templates except the three public templates that have been shown above.
 
@@ -57,7 +57,7 @@ Staff interface:
 
 /borrowersummary: this route execute a SQL query to show a table of all borrowers and the number of loans in total they each have had. Then showing the result on borrowersummary.html page.
 
-Assumptions and Design Decisions
+###Assumptions and Design Decisions
 
 The user interface was designed to be easy to navigate and use. The main navigation menu is located at the top of the page, and the theme colours are simple grey and blue. The application uses two separate templates for public and staff interfaces. The “/” (public.html) is the base for”/search” and “/booklist”, and the “/staff” (staff.html) is the base for all other templates except three public interface templates.
 
@@ -101,18 +101,18 @@ For instance, the “add_borrower” function is used to handle requests to the 
 
 The function first checks the request method, if the method is GET, the function returns the add_borrower.html template, which means that the user is requesting to view the form for adding a borrower. Then if the method is POST, the function retrieves the data from the form submitted by the user using “request.form.get()” get data to execute the query insert the data into the borrowers table, and finally, redirect to the page staff_borrowers.html (function: listborrowers). 
 
-Changes for Multiple Library Branches
+###Changes for Multiple Library Branches
 
 If this application was to support multiple library branches, the following changes would be required:
 
-Changes of Database
+####Changes of Database
 
 New tables and modifications to existing tables could be required. The table would have other relevant information, the primary key for this table would be a unique identifier for each branch, and the existing tables such as books and borrowers will need to have a foreign key column added that links to the new library branch table. For example, the format in bookcopies table could be a foreign key link to the loans table to create physical books that can only be loaned once at a time, and other books can be loaned multiple times simultaneously. 
 
-Changes in Design and Implementation
+####Changes in Design and Implementation
 
 The user interface will require updating. Users can interact with different interfaces after logging in as they have different permissions. The “issue book” and "return book" will be changed as the drop-down menu could not handle a mass of data and multiple library branches. More functions will be added, and the navigation interface needs to be redesigned, using a more concise design, hiding part of the feature under part of the function, which operates effectively to match users’ different needs. More user input needs to be validated to ensure that the correct branch is entered.
 
-Conclusion
+###Conclusion
 
 The web application project for Waikiribiri Library has successfully provided a solution for the library management system with a public and staff interface. The solution is structured with multiple routes and functions, the endpoints are accessible via GET and POST methods, and borrowers and staff have separate templates base. For future use with multiple library branches, both the database and design need to be changed for more efficiency and better user experience.
