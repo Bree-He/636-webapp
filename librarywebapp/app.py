@@ -42,13 +42,21 @@ def searchbooks():
     bookList = connection.fetchall()
     print(bookList)
     return render_template("searchlist.html", booklist = bookList)
+##########public interface list all avaliable book
+@app.route("/booklist")
+def listbooks():
+    connection = getCursor()
+    connection.execute("SELECT * FROM books;")
+    bookList = connection.fetchall()
+    print(bookList)
+    return render_template("booklist.html", booklist = bookList)  
 
 ######staff interface
 @app.route("/staff")
 def staff():
-    return render_template("base.html")
-
-@app.route("/staffsearch", methods=["POST"])
+    return render_template("staff.html")
+######staff search
+@app.route("/staff/search", methods=["POST"])
 def staffsearch():
     searchterm = request.form.get('search')
     searchterm = "%" + searchterm +"%" if searchterm else "%"
@@ -61,12 +69,12 @@ def staffsearch():
                        WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
     bookList = connection.fetchall()
     print(bookList)
-    return render_template("staffsearch.html", booklist = bookList)
+    return render_template("staff/search.html", booklist = bookList)
 
 
 ##############this route is display all availability of all copies of a book (staff).
 
-@app.route("/staffbc")
+@app.route("/staff_search")
 def staffbc():
     searchterm = request.form.get('search')
     searchterm = "%" + searchterm +"%" if searchterm else "%"
@@ -79,87 +87,44 @@ def staffbc():
                        WHERE books.booktitle LIKE %s OR books.author LIKE %s;",(searchterm, searchterm))
     bookList = connection.fetchall()
     print(bookList)
-    return render_template("staffbc.html", booklist = bookList)
+    return render_template("staff_search.html", booklist = bookList)
 
-##########public interface list all avaliable book(bookcopies)
-@app.route("/booklist")
-def listbooks():
-    connection = getCursor()
-    connection.execute("SELECT DISTINCT bookcopies.bookcopyid, books.booktitle, books.author, \
-                        books.yearofpublication, books.category, loans.returned \
-                            from bookcopies \
-                                left join books on bookcopies.bookid = books.bookid \
-                                    left join loans on bookcopies.bookcopyid = loans.bookcopyid \
-                                        where returned = 1 or returned is null;")
-    bookList = connection.fetchall()
-    print(bookList)
-    return render_template("booklist.html", booklist = bookList)    
-#########issue book
-@app.route("/loanbook")
-def loanbook():
-    todaydate = datetime.now().date()
-    connection = getCursor()
-    connection.execute("SELECT * FROM borrowers;")
-    borrowerList = connection.fetchall()
-    sql = """SELECT * FROM bookcopies
-inner join books on books.bookid = bookcopies.bookid
- WHERE bookcopyid not in (SELECT bookcopyid from loans where returned <> 1 or returned is NULL);"""
-    connection.execute(sql)
-    bookList = connection.fetchall()
-    return render_template("addloan.html", loandate = todaydate,borrowers = borrowerList, books= bookList)
-@app.route("/loan/add", methods=["POST"])
-def addloan():
-    borrowerid = request.form.get('borrower')
-    bookid = request.form.get('book')
-    loandate = request.form.get('loandate')
-    cur = getCursor()
-    cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
-    return redirect("/currentloans")
 
-#######return a book
-@app.route("/returnbook")
-def returnbook():
-    todaydate = datetime.now().date()
-    connection = getCursor()
-    sql = "SELECT * FROM loans WHERE returned = 1;"
-    connection.execute(sql)  
-    loanList = connection.fetchall()
-    return render_template("returnloan.html", returndate = todaydate, loans = loanList)
-@app.route("/loan/return", methods=["POST"])
-def returnloan():
-    loanid = request.form.get('loanid')
-    bookcopyid = request.form.get('bookcopyid')  
-    borrowerid= request.form.get('borrowerid')  
-    loandate = request.form.get('loandate')   
-    cur = getCursor()
-    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
-    return redirect("/currentloans")
 
-#############  update borrowers##########
-@app.route("/listborrowers")
+
+@app.route("/staff_borrowers")
 def listborrowers():
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
-    return render_template("borrowerlist.html", borrowerlist = borrowerList)
-
-@app.route("/1up")
+    return render_template("staff_borrowers.html", borrowerlist = borrowerList)
+#####following is create a table for search borrowers by name or by id
+@app.route("/staff/search_borrower", methods=["POST"])
+def searchborrowers():
+    searchterm = request.form.get('search')
+    searchterm = "%" + searchterm +"%" if searchterm else "%"
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers WHERE borrowers.firstname LIKE %s OR borrowers.familyname LIKE %s OR borrowers.borrowerid LIKE %s;",(searchterm, searchterm, searchterm,))
+    borrowerList = connection.fetchall()
+    return render_template("staff/search_borrower.html", borrowerlist = borrowerList)
+#############  update borrowers##########
+@app.route("/update_borrower")
 def up1():
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers;")
     borrowerList = connection.fetchall()
-    return render_template("1up.html", borrowers= borrowerList)
+    return render_template("update_borrower.html", borrowers= borrowerList)
 
-@app.route("/2up", methods=["POST"])
+@app.route("/staff/update_borrower", methods=["POST"])
 def up2():     
     borrowerid = request.form.get('borrower')
 
     connection = getCursor()
     connection.execute("SELECT * FROM borrowers where borrowers.borrowerid = %s",(borrowerid,))
     borrowerList = connection.fetchall()   
-    return render_template("2up.html", borrowers= borrowerList)
+    return render_template("staff/update_borrower.html", borrowers= borrowerList)
     
-@app.route("/3up", methods=["POST"])
+@app.route("/staff/update_borrower_submit", methods=["POST"])
 def up3():   
         borrowerid = request.form.get('borrowerid')
         firstname = request.form.get('firstname')
@@ -175,28 +140,13 @@ def up3():
             WHERE borrowerid = %s ",(firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode, borrowerid,))  
         connection.execute("SELECT * FROM borrowers where borrowers.borrowerid = %s",(borrowerid,))
         borrowerList = connection.fetchall()      
-        return render_template("borrowerlist.html",borrowerlist= borrowerList)
+        return render_template("staff_borrowers.html",borrowerlist= borrowerList)
 
-
-
-
-#####following is create a table for search borrowers by name or by id
-@app.route("/searchborrower", methods=["POST"])
-def searchborrowers():
-    searchterm = request.form.get('search')
-    searchterm = "%" + searchterm +"%" if searchterm else "%"
-    connection = getCursor()
-    connection.execute("SELECT * FROM borrowers WHERE borrowers.firstname LIKE %s OR borrowers.familyname LIKE %s OR borrowers.borrowerid LIKE %s;",(searchterm, searchterm, searchterm,))
-    borrowerList = connection.fetchall()
-    return render_template("borrower_search.html", borrowerlist = borrowerList)
-
-
-####################
-######following functions are for add borrowers
-@app.route("/borroweradd", methods=["GET", "POST"])
+######add new borrower
+@app.route("/add_borrower", methods=["GET", "POST"])
 def add_borrower():
     if request.method == "GET":
-        return render_template("addborrower.html")
+        return render_template("add_borrower.html")
     else:
         first_name = request.form.get("first_name")
         family_name = request.form.get("family_name")
@@ -209,12 +159,49 @@ def add_borrower():
 
         connection = getCursor()
         connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                        ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))
-        
+                        ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))    
+    return redirect(url_for("listborrowers"))
 
-        return redirect(url_for("listborrowers"))
+#########issue book
+@app.route("/issue_book")
+def loanbook():
+    todaydate = datetime.now().date()
+    connection = getCursor()
+    connection.execute("SELECT * FROM borrowers;")
+    borrowerList = connection.fetchall()
+    sql = """SELECT * FROM bookcopies
+inner join books on books.bookid = bookcopies.bookid
+ WHERE bookcopyid not in (SELECT bookcopyid from loans where returned <> 1 or returned is NULL);"""
+    connection.execute(sql)
+    bookList = connection.fetchall()
+    return render_template("issue_book.html", loandate = todaydate,borrowers = borrowerList, books= bookList)
+@app.route("/loan/add", methods=["POST"])
+def addloan():
+    borrowerid = request.form.get('borrower')
+    bookid = request.form.get('book')
+    loandate = request.form.get('loandate')
+    cur = getCursor()
+    cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
+    return redirect("/currentloans")
 
-
+#######return a book
+@app.route("/returnbook")
+def returnbook():
+    todaydate = datetime.now().date()
+    connection = getCursor()
+    sql = "SELECT * FROM loans WHERE returned = 0;"
+    connection.execute(sql)  
+    loanList = connection.fetchall()
+    return render_template("returnloan.html", returndate = todaydate, loans = loanList)
+@app.route("/loan/return", methods=["POST"])
+def returnloan():
+    loanid = request.form.get('loanid')
+    bookcopyid = request.form.get('bookcopyid')  
+    borrowerid= request.form.get('borrowerid')  
+    loandate = request.form.get('loandate')   
+    cur = getCursor()
+    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
+    return redirect("/currentreturn")
 ####################display a list of overdue books & their borrowers
 @app.route("/overdue")
 def overdue():
@@ -227,9 +214,9 @@ def overdue():
     connection.execute(sql)
     loanList = connection.fetchall()
     return render_template("overdue.html", loanlist = loanList)
-###################display a list of Loan Summary
 
-@app.route("/loansummary")
+###################display a list of Loan Summary
+@app.route("/loan_summary")
 def loansummary():
     connection = getCursor()
     sql = """SELECT  books.bookid, books.booktitle, books.author, books.category, books.yearofpublication,count(loans.loanid) as totalnumber
@@ -239,7 +226,7 @@ def loansummary():
                 group by books.bookid;"""
     connection.execute(sql)
     loanSummary = connection.fetchall()
-    return render_template("loansummary.html", loansummary = loanSummary)
+    return render_template("loan_summary.html", loansummary = loanSummary)
 
 #########display a list of borrower summary
 @app.route("/borrowersummary")
@@ -263,7 +250,24 @@ def currentloans():
                 inner join bookcopies bc on b.bookid = bc.bookid
                     inner join loans l on bc.bookcopyid = l.bookcopyid
                         inner join borrowers br on l.borrowerid = br.borrowerid
-            order by br.familyname, br.firstname, l.loandate;"""
+                            where l.returned = 0
+            order by br.familyname, br.firstname, l.loandate DESC;"""
     connection.execute(sql)
     loanList = connection.fetchall()
     return render_template("currentloans.html", loanlist = loanList)
+
+@app.route("/currentreturn")
+def currentreturn():
+    connection = getCursor()
+    sql=""" select br.borrowerid, br.firstname, br.familyname,  
+                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
+                b.category, b.yearofpublication, bc.format 
+            from books b
+                inner join bookcopies bc on b.bookid = bc.bookid
+                    inner join loans l on bc.bookcopyid = l.bookcopyid
+                        inner join borrowers br on l.borrowerid = br.borrowerid
+                            where l.returned = 1
+            order by br.familyname, br.firstname, l.loandate DESC;"""
+    connection.execute(sql)
+    loanList = connection.fetchall()
+    return render_template("currentreturn.html", loanlist = loanList)

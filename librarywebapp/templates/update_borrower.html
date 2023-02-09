@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "staff.html" %}
 {% block content %}
 <!-- borrowers is the variable passed in listing borrowers -->
 <!-- books is the variable passed in listing available books -->
@@ -13,7 +13,7 @@
         <br>
     </div>
     
-    <form action="/2up" method="post"> <!-- the form submitted using POST to the /loan/add route -->
+    <form action="/staff/update_borrower" method="post"> <!-- the form submitted using POST to the /loan/add route -->
         <div class="container mt-3 text-center">
             <label>Borrower: </label>
                 <select name="borrower" id="borrower" required>   <!-- a drop down box of Borrowers,shown with borrower's id, firstname, and familyname. This field is required field -->

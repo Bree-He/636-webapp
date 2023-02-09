@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "staff.html" %}
 {% block content %}   
     <div class="container mt-3 text-center">
         <h4>Book Copy List</h4>
@@ -8,7 +8,7 @@
     <!-- add text and search button-->
     
     <div class="container mt-3 text-center">
-    <form action="/staffsearch" method="POST">
+    <form action="/staff/search" method="POST">
         <input type="text" name="search">
         <input type = "submit" value="Search">    
     </form>
@@ -38,7 +38,12 @@
                         {% else %}
                         <td>Avaliable</td>
                         {% endif %} 
-                        <td>{{bookcopy[6]}}</td>
+                        <!-- Only show the due date if the book is on loan -->
+                        {% if bookcopy[5] == 0 %}
+                            <td>{{bookcopy[6]}}</td>
+                         {% else %}
+                            <td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

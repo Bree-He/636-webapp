@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "staff.html" %}
 {% block content %}
     <div class="container mt-3 text-center">
         <h4>Book Copy List</h4>
@@ -6,7 +6,7 @@
         <hr>
     </div>
     <div class="container mt-3 text-center">
-        <form action="/staffsearch" method="POST">
+        <form action="/staff/search" method="POST">
             <input type="text" name="search">
             <input type = "submit" value="Search">    
         </form>
@@ -31,15 +31,18 @@
                         <td>{{bookcopy[3]}}</td>
                         <td>{{bookcopy[4]}}</td>
                         
-                        <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is '0'. -->
-                        {% if bookcopy[5]==1%} 
-                        <td>Returned</td> 
-                        {% elif bookcopy[5]==0%} 
-                        <td>On Loan</td>  
+                        <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is '0'. --> 
+                        {% if bookcopy[5] == 0%} 
+                            <td>On Loan</td>  
                         {% else %}
-                        <td>Avaliable</td>
-                        {% endif %} 
-                        <td>{{bookcopy[6]}}</td>
+                            <td>Avaliable</td>
+                        {% endif %}
+                        <!-- Only show the due date if the book is on loan -->
+                        {% if bookcopy[5] == 0 %}
+                            <td>{{bookcopy[6]}}</td>
+                         {% else %}
+                            <td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

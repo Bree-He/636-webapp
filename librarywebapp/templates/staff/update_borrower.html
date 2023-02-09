@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "staff.html" %}
 {% block content %}
 <!-- borrowers is the variable passed in listing borrowers -->
 <!-- books is the variable passed in listing available books -->
@@ -12,7 +12,7 @@
         <h5>Please update borrower's information </h5>
         <br>
     </div>
-    <form action="/3up" method="POST"> <!-- the form submitted using POST to the /loan/add route -->
+    <form action="/staff/update_borrower_submit" method="POST"> <!-- the form submitted using POST to the /loan/add route -->
 
         <div class="container mt-3 text-left">
             <label>Borrower's information:</label>

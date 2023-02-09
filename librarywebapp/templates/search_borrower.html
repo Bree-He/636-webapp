@@ -8,20 +8,20 @@
 </div>
 <!-- add text and search button-->
 <div class="container mt-3 text-center">
-<form action="/searchborrower" method="POST">
-    <input type="text" name="search">
-    <input type = "submit" value="Search">    
-</form>
+    <form action="/staff/search_borrower" method="POST">
+        <input type="text" name="search">
+        <input type = "submit" value="Search">    
+    </form>
 </div>
 <br>
 <div class="container">
-    <table>  <!-- list all borrowers in a table. Display the borrowerlist in table formatting, and make each row is striped, hoverable, and bordered-->
-        <table class="table table-striped table-hover  table-bordered">
-            <thead class="table-primary">  <!-- the table head's colour is blue-->
-                <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
-                <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
-            </thead>
-            <tbody>
+ <!-- list all borrowers in a table. Display the borrowerlist in table formatting, and make each row is striped, hoverable, and bordered-->
+    <table class="table table-striped table-hover  table-bordered">
+        <thead class="table-primary">  <!-- the table head's colour is blue-->
+            <tr><th>Borrower ID</th><th>First Name</th><th>Family Name</th><th>Date of Birth</th>
+            <th>House Number</th><th>Street</th><th>Town</th><th>City</th><th>Postal Code</th></tr>
+        </thead>
+        <tbody>
             {% for borrower in borrowerlist %}
             <tr>
                 <td>{{borrower[0]}}</td>
@@ -32,12 +32,10 @@
                 <td>{{borrower[5]}}</td>
                 <td>{{borrower[6]}}</td>
                 <td>{{borrower[7]}}</td>
-                <td>{{borrower[8]}}</td>
-            
+                <td>{{borrower[8]}}</td>           
             </tr>
-        {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 <br>
