@@ -1,19 +1,13 @@
 {% extends "staff.html" %}
 {% block content %}
-<!-- borrowers is the variable passed in listing borrowers -->
-<!-- books is the variable passed in listing available books -->
-<!-- loandate is the variable passed in containing the current date -->
-<!-- name for the borrower dropdown borrower should be  borrower -->
-<!-- name for the book dropdown should be book-->
-<!-- name for the hidden field with date should be loandate -->
-<!-- URL for submission (action) of form should be loan/add -->
+
 <section>
     <div class="container mt-3 text-center">
         <h5>Please select the borrower and update information </h5>
         <br>
     </div>
     
-    <form action="/staff/update_borrower" method="post"> <!-- the form submitted using POST to the /loan/add route -->
+    <form action="/staff/update_borrower" method="post"> <!-- the form submitted using POST to the /staff/update_borrower -->
         <div class="container mt-3 text-center">
             <label>Borrower: </label>
                 <select name="borrower" id="borrower" required>   <!-- a drop down box of Borrowers,shown with borrower's id, firstname, and familyname. This field is required field -->

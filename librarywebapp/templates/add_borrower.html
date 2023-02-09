@@ -6,45 +6,55 @@
     <hr>
 </div>
 
-<div class="container">
-    <form action="/add_borrower" method="POST">
+<div class="container d-flex justify-content-center">
+  <form action="/add_borrower" method="POST" class="w-50">
         
+    <div class="form-group mt-3">
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" name="first_name" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="family_name">Family Name</label>
+      <input type="text" id="family_name" name="family_name" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="Date of Birth">Date of Birth</label>
+      <input type="text" id="date_of_birth" name="date_of_birth" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="house_number">House Number</label>
+      <input type="text"  id="house_number" name="house_number" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="street">Street</label>
+      <input type="text" id="street" name="street" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="town">Town</label>
+      <input type="text" id="town" name="town" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="city">City</label>
+      <input type="text" id="city" name="city" class="form-control">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="postal_code">Postal Code</label>
+      <input type="text" id="postal_code" name="postal_code" class="form-control">
+    </div>
+
+    <div class="container mt-3 text-center">
+        <input type="submit" value="Add Borrower" >
+    </div>   
         
-        <label for="first_name">First Name</label>
-        <input type="text" id="first_name" name="first_name">
-        <br>
-        
-        <label for="family_name">Family Name</label>
-        <input type="text" id="family_name" name="family_name" >
-        <br>
-        
-        <label for="Date of Birth">Date of Birth</label>
-        <input type="text" id="date_of_birth" name="date_of_birth" >
-        <br>
-        
-        <label for="house_number">House Number</label>
-        <input type="text"  id="house_number" name="house_number">
-        <br>
-        
-        <label for="street">Street</label>
-        <input type="text" id="street" name="street" >
-        <br>
-        
-        <label for="town">Town</label>
-        <input type="text" id="town" name="town" >
-        <br>
-        
-        <label for="city">City</label>
-        <input type="text" id="city" name="city" >
-        <br>
-        
-        <label for="postal_code">Postal Code</label>
-        <input type="text" id="postal_code" name="postal_code" >
-        <br>
-        
-        <input type="submit" value="Add Borrower" class="btn btn-primary">
-        
-    </form>
+  </form>
 </div>
 
 {% endblock %}
+

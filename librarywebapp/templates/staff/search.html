@@ -5,6 +5,7 @@
         <h5>A list of all book copies in our collection</h5>
         <hr>
     </div>
+        <!-- add text and search button-->
     <div class="container mt-3 text-center">
         <form action="/staff/search" method="POST">
             <input type="text" name="search">
@@ -12,8 +13,7 @@
         </form>
     </div>
     <br>
-    <!-- -->
-    <!-- add text and search button-->
+
     <br>
     <div class="container">
         <table> 
@@ -31,7 +31,7 @@
                         <td>{{bookcopy[3]}}</td>
                         <td>{{bookcopy[4]}}</td>
                         
-                        <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is '0'. --> 
+                        <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is '0' or null. --> 
                         {% if bookcopy[5] == 0%} 
                             <td>On Loan</td>  
                         {% else %}

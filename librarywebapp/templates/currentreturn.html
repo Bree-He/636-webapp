@@ -1,13 +1,6 @@
 {% extends "staff.html" %}
 {% block content %}
-<!-- 
-    Web Technologies Assessment
-    Author: Bairu(Bree) He
-    Student ID: 1139032
-    
--->
-<!-- code in here to display a list of loans -->
-<!-- loanlist is the variable passed in containing list of loans -->
+
 <div class="container mt-3 text-center">
     <h5>Current return List</h5>
     <hr>
@@ -43,11 +36,11 @@
                     <td>{{loans[4]}}</td>
                     <td>{{loans[5]}}</td>
 
-                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'On Loan' when current states is else number. -->
+                    <!-- show the current states of books, indicate 'Returned' when current states is '1', indicate'available' when current states is else number. -->
                     {% if loans[6]==1%} 
                     <td>Returned</td>  
                     {% else %}
-                    <td>On Loan</td>
+                    <td>Avaliable</td>
                     {% endif %} 
 
                     <td>{{loans[8]}}</td>

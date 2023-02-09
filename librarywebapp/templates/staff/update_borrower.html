@@ -1,57 +1,63 @@
 {% extends "staff.html" %}
 {% block content %}
-<!-- borrowers is the variable passed in listing borrowers -->
-<!-- books is the variable passed in listing available books -->
-<!-- loandate is the variable passed in containing the current date -->
-<!-- name for the borrower dropdown borrower should be  borrower -->
-<!-- name for the book dropdown should be book-->
-<!-- name for the hidden field with date should be loandate -->
-<!-- URL for submission (action) of form should be loan/add -->
+
 <section>
-    <div class="container mt-3 text-center">
+    <div class="container mt-3 text-center"> 
         <h5>Please update borrower's information </h5>
         <br>
     </div>
-    <form action="/staff/update_borrower_submit" method="POST"> <!-- the form submitted using POST to the /loan/add route -->
+    <form action="/staff/update_borrower_submit" method="POST" class="mx-auto w-50">      <!--the form submitted using POST to the /staff/update_borrower_submit route -->
 
-        <div class="container mt-3 text-left">
+        <div class="container mt-3 text-left">         <!-- make the width to 50%,wrap each form input and label, 16px between diffrent inputboxes, margin-top of 24px between the form groups and the submit botton -->
             <label>Borrower's information:</label>
             <br>
             {% for borrower in borrowers %}  
-            <label for="borrowerid">Borrower ID</label>
-            <input type="text" id="borrowerid" name="borrowerid" value="{{ borrower[0] }}">
-            <br>
+            <div class="form-group">
+                <label for="borrowerid">Borrower ID</label>
+                <input type="text" id="borrowerid" name="borrowerid" value="{{ borrower[0] }}" class="form-control">
+            </div>
+    
+            <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input type="text" id="firstname" name="firstname" value="{{ borrower[1] }}" class="form-control">
+            </div>
+        
+            <div class="form-group">
+                <label for="familyname">Family Name</label>
+                <input type="text" id="familyname" name="familyname" value="{{ borrower[2] }}" class="form-control">
+            </div>
+        
+            <div class="form-group">
+                <label for="dateofbirth">Date of Birth</label>
+                <input type="text" id="dateofbirth" name="dateofbirth" value="{{ borrower[3] }}" class="form-control">
+            </div>
+        
+            <div class="form-group">
+                <label for="housenumbername">House Number</label>
+                <input type="text"  id="housenumbername" name="housenumbername" value="{{ borrower[4] }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="street">Street</label>
+                <input type="text" id="street" name="street"  value="{{ borrower[5] }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="town">Town</label>
+                <input type="text" id="town" name="town"  value="{{ borrower[6] }}" class="form-control">
+            </div>
 
-            <label for="firstname">First Name</label>
-            <input type="text" id="firstname" name="firstname" value="{{ borrower[1] }}">
-            <br>
-        
-            <label for="familyname">Family Name</label>
-            <input type="text" id="familyname" name="familyname" value="{{ borrower[2] }}" >
-            <br>
-        
-            <label for="dateofbirth">Date of Birth</label>
-            <input type="text" id="dateofbirth" name="dateofbirth" value="{{ borrower[3] }}">
-            <br>
-        
-            <label for="housenumbername">House Number</label>
-            <input type="text"  id="housenumbername" name="housenumbername" value="{{ borrower[4] }}">
-            <br>
-            <label for="street">Street</label>
-            <input type="text" id="street" name="street"  value="{{ borrower[5] }}">
-            <br>
-            <label for="town">Town</label>
-            <input type="text" id="town" name="town"  value="{{ borrower[6] }}">
-            <br>
-            <label for="city">City</label>
-            <input type="text" id="city" name="city"  value="{{ borrower[7] }}">
-            <br>
-            <label for="postalcode">Postal Code</label>
-            <input type="text" name="postalcode" name="postalcode"  value="{{ borrower[8] }}">
-            <br>
-            {% endfor %}      
+            <div class="form-group">                
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city"  value="{{ borrower[7] }}" >
+            </div>
+                
+            <div class="form-group"> 
+                <label for="postalcode">Postal Code</label>
+                <input type="text" class="form-control" id="postalcode" name="postalcode"  value="{{ borrower[8] }}">
+            </div>
+
+                {% endfor %}      
+
         </div>
-        <br>
  
 
 
