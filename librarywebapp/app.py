@@ -71,7 +71,6 @@ def staffsearch():
     print(bookList)
     return render_template("staff/search.html", booklist = bookList)
 
-
 ##############this route is display all availability of all copies of a book (staff).
 
 @app.route("/staff_search")
@@ -88,9 +87,6 @@ def staffbc():
     bookList = connection.fetchall()
     print(bookList)
     return render_template("staff_search.html", booklist = bookList)
-
-
-
 
 @app.route("/staff_borrowers")
 def listborrowers():
@@ -183,6 +179,21 @@ def addloan():
     cur = getCursor()
     cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
     return redirect("/currentloans")
+@app.route("/currentloans")
+def currentloans():
+    connection = getCursor()
+    sql=""" select br.borrowerid, br.firstname, br.familyname,  
+                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
+                b.category, b.yearofpublication, bc.format 
+            from books b
+                inner join bookcopies bc on b.bookid = bc.bookid
+                    inner join loans l on bc.bookcopyid = l.bookcopyid
+                        inner join borrowers br on l.borrowerid = br.borrowerid
+                            where l.returned = 0
+            order by br.familyname, br.firstname, l.loandate DESC;"""
+    connection.execute(sql)
+    loanList = connection.fetchall()
+    return render_template("currentloans.html", loanlist = loanList)
 
 #######return a book
 @app.route("/returnbook")
@@ -202,6 +213,22 @@ def returnloan():
     cur = getCursor()
     cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
     return redirect("/currentreturn")
+@app.route("/currentreturn")
+def currentreturn():
+    connection = getCursor()
+    sql=""" select br.borrowerid, br.firstname, br.familyname,  
+                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
+                b.category, b.yearofpublication, bc.format 
+            from books b
+                inner join bookcopies bc on b.bookid = bc.bookid
+                    inner join loans l on bc.bookcopyid = l.bookcopyid
+                        inner join borrowers br on l.borrowerid = br.borrowerid
+                            where l.returned = 1
+            order by br.familyname, br.firstname, l.loandate DESC;"""
+    connection.execute(sql)
+    loanList = connection.fetchall()
+    return render_template("currentreturn.html", loanlist = loanList)
+
 ####################display a list of overdue books & their borrowers
 @app.route("/overdue")
 def overdue():
@@ -240,34 +267,5 @@ def borrowersummary():
     borrowerSummary = connection.fetchall()
     return render_template("borrowersummary.html", borrowersummary = borrowerSummary)
 
-@app.route("/currentloans")
-def currentloans():
-    connection = getCursor()
-    sql=""" select br.borrowerid, br.firstname, br.familyname,  
-                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
-                b.category, b.yearofpublication, bc.format 
-            from books b
-                inner join bookcopies bc on b.bookid = bc.bookid
-                    inner join loans l on bc.bookcopyid = l.bookcopyid
-                        inner join borrowers br on l.borrowerid = br.borrowerid
-                            where l.returned = 0
-            order by br.familyname, br.firstname, l.loandate DESC;"""
-    connection.execute(sql)
-    loanList = connection.fetchall()
-    return render_template("currentloans.html", loanlist = loanList)
 
-@app.route("/currentreturn")
-def currentreturn():
-    connection = getCursor()
-    sql=""" select br.borrowerid, br.firstname, br.familyname,  
-                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
-                b.category, b.yearofpublication, bc.format 
-            from books b
-                inner join bookcopies bc on b.bookid = bc.bookid
-                    inner join loans l on bc.bookcopyid = l.bookcopyid
-                        inner join borrowers br on l.borrowerid = br.borrowerid
-                            where l.returned = 1
-            order by br.familyname, br.firstname, l.loandate DESC;"""
-    connection.execute(sql)
-    loanList = connection.fetchall()
-    return render_template("currentreturn.html", loanlist = loanList)
+
