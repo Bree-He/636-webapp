@@ -66,38 +66,38 @@ The reason for having two separate templates, public.html and staff.html, is to 
 The application detects the method used to make a request GST or POST to determine which page to display.
 For example, the “returnloan” function uses the POST method:
 
-@app.route("/loan/return", methods=["POST"])
-def returnloan():
-    loanid = request.form.get('loanid')
-    bookcopyid = request.form.get('bookcopyid')  
-    borrowerid= request.form.get('borrowerid')  
-    loandate = request.form.get('loandate')   
-    cur = getCursor()
-    cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
-    return redirect("/currentreturn")
+    @app.route("/loan/return", methods=["POST"])
+    def returnloan():
+        loanid = request.form.get('loanid')
+        bookcopyid = request.form.get('bookcopyid')  
+        borrowerid= request.form.get('borrowerid')  
+        loandate = request.form.get('loandate')   
+        cur = getCursor()
+        cur.execute("update loans set loans.returned = '1' where loanid = %s", (loanid,))
+        return redirect("/currentreturn")
  
 The reason for this is that the "returnloan" function is used to process the data sent from a form. The form sends data to the server in the body of the request, and the POST method is used for this.
 Sometimes the function can handle request methods both GET and POST.
 For instance, the “add_borrower” function is used to handle requests to the “/add_borrower" endpoint and accepts both GET and POST methods. 
 
-@app.route("/add_borrower", methods=["GET", "POST"])
-def add_borrower():
-    if request.method == "GET":
-        return render_template("add_borrower.html")
-    else:
-        first_name = request.form.get("first_name")
-        family_name = request.form.get("family_name")
-        date_of_birth = request.form.get("date_of_birth")
-        house_number = request.form.get("house_number")
-        street = request.form.get("street")
-        town = request.form.get("town")
-        city = request.form.get("city")
-        postal_code = request.form.get("postalcode")
+    @app.route("/add_borrower", methods=["GET", "POST"])
+    def add_borrower():
+        if request.method == "GET":
+            return render_template("add_borrower.html")
+        else:
+            first_name = request.form.get("first_name")
+            family_name = request.form.get("family_name")
+            date_of_birth = request.form.get("date_of_birth")
+            house_number = request.form.get("house_number")
+            street = request.form.get("street")
+            town = request.form.get("town")
+            city = request.form.get("city")
+            postal_code = request.form.get("postalcode")
 
-        connection = getCursor()
-        connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                        ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))    
-    return redirect(url_for("listborrowers"))
+            connection = getCursor()
+            connection.execute("INSERT INTO borrowers (firstname, familyname, dateofbirth, housenumbername, street, town, city, postalcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                            ( first_name, family_name, date_of_birth, house_number, street, town, city, postal_code))    
+        return redirect(url_for("listborrowers"))
 
 The function first checks the request method, if the method is GET, the function returns the add_borrower.html template, which means that the user is requesting to view the form for adding a borrower. Then if the method is POST, the function retrieves the data from the form submitted by the user using “request.form.get()” get data to execute the query insert the data into the borrowers table, and finally, redirect to the page staff_borrowers.html (function: listborrowers). 
 
